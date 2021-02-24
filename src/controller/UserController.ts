@@ -3,28 +3,25 @@ import { getRepository } from "typeorm";
 import { Users } from '../models/Users';
 
 class UserController{
+    async create(request:Request, response:Response){
+        /*const body = request.body;
+        console.log(body);
+        return response.send();*/
 
-    async create(request: Request, response:Response){
-        const { name, email } = request.body;
-       
-        const UsersRepository = getRepository(Users);
+        const {name, email} = request.body;
+        const userRepository = getRepository(Users); //getrepository(Users) model Users.ts
 
-        const UserAlreadExist = await UsersRepository.findOne({
+        const userAlreadExists = await getRepository(Users).findOne({
             email
-        })
-
-        if (UserAlreadExist){
-            return response.status(404).json({
-                error:"Users alread exists!"
-            })
-        }
-
-        const user = UsersRepository.create({
-           name, email,
         });
 
-        await UsersRepository.save(user);
-        return response.json(user)
+        if(userAlreadExists){
+            return response.status(400).json({error: "User alread exist!"});
+        }
+
+        const user = userRepository.create({name,email})
+        await userRepository.save(user);
+        return response.json(user);
     }
 }
 
