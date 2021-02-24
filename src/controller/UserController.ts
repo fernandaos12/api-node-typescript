@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { getRepository } from "typeorm";
+import { getCustomRepository, getRepository } from "typeorm";
 import { Users } from '../models/Users';
+import { UserRepository } from '../repositories/UserRepository';
 
 class UserController{
     async create(request:Request, response:Response){
@@ -9,7 +10,8 @@ class UserController{
         return response.send();*/
 
         const {name, email} = request.body;
-        const userRepository = getRepository(Users); //getrepository(Users) model Users.ts
+     //   const userRepository = getRepository(Users); //getrepository(Users) model Users.ts
+        const userRepository = getCustomRepository(UserRepository);
 
         const userAlreadExists = await getRepository(Users).findOne({
             email
@@ -25,4 +27,4 @@ class UserController{
     }
 }
 
-export { UserController }
+export { UserController };
